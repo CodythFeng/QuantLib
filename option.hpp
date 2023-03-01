@@ -100,7 +100,7 @@ namespace QuantLib {
     inline std::ostream& operator<<(std::ostream& out, Option::Type type) {
         switch (type) {
           case Option::Call:
-            return out << "Call";
+            return out << "Call";   
           case Option::Put:
             return out << "Put";
           default:
