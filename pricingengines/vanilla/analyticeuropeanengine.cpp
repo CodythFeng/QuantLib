@@ -54,7 +54,8 @@ namespace QuantLib {
         ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
-
+        Real temp1 = payoff->strike();
+        Date temp2 = arguments_.exercise->lastDate();
         Real variance =
             process_->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
