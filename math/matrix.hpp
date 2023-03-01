@@ -60,6 +60,9 @@ namespace QuantLib {
 
         Matrix& operator=(const Matrix&);
         Matrix& operator=(Matrix&&) noexcept;
+
+        bool operator==(const Matrix&) const;
+        bool operator!=(const Matrix&) const;
         //@}
 
         //! \name Algebraic operators
@@ -253,6 +256,15 @@ namespace QuantLib {
     inline Matrix& Matrix::operator=(Matrix&& from) noexcept {
         swap(from);
         return *this;
+    }
+
+    inline bool Matrix::operator==(const Matrix& to) const {
+        return rows_ == to.rows_ && columns_ == to.columns_ &&
+               std::equal(begin(), end(), to.begin());
+    }
+
+    inline bool Matrix::operator!=(const Matrix& to) const { 
+        return !this->operator==(to); 
     }
 
     inline void Matrix::swap(Matrix& from) {
@@ -503,7 +515,7 @@ namespace QuantLib {
 
     inline Matrix operator-(const Matrix& m1) {
         Matrix temp(m1.rows(), m1.columns());
-        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<Real>());
+        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<>());
         return temp;
     }
 

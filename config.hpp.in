@@ -60,9 +60,6 @@
 /* Define this if you want to enable sessions. */
 #undef QL_ENABLE_SESSIONS
 
-/* Define this if you want thread-safe singleton initialization. */
-#undef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-
 /* Define this if you want to enable thread-safe observer pattern. */
 #undef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 

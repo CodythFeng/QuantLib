@@ -287,8 +287,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOOST_INCLUDE = @BOOST_INCLUDE@
 BOOST_INTERPROCESS_LIB = @BOOST_INTERPROCESS_LIB@
-BOOST_LIB = @BOOST_LIB@
-BOOST_THREAD_LIB = @BOOST_THREAD_LIB@
 BOOST_UNIT_TEST_MAIN_CXXFLAGS = @BOOST_UNIT_TEST_MAIN_CXXFLAGS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -319,6 +317,7 @@ EMACSLOADPATH = @EMACSLOADPATH@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GREP = @GREP@
 HAVE_BOOST_TEST = @HAVE_BOOST_TEST@
 INSTALL = @INSTALL@
@@ -357,6 +356,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PTHREAD_CXXFLAGS = @PTHREAD_CXXFLAGS@
+PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -505,13 +505,12 @@ cpp_files = \
 @UNITY_BUILD_FALSE@EXTRA_DIST = CMakeLists.txt config.hpp.cfg \
 @UNITY_BUILD_FALSE@	config.ansi.hpp config.msvc.hpp \
 @UNITY_BUILD_FALSE@	config.mingw.hpp config.sun.hpp \
-@UNITY_BUILD_FALSE@	qldefines.hpp.cfg userconfig.hpp \
-@UNITY_BUILD_FALSE@	version.hpp.cfg
+@UNITY_BUILD_FALSE@	qldefines.hpp.cfg userconfig.hpp
 @UNITY_BUILD_TRUE@EXTRA_DIST = $(cpp_files) CMakeLists.txt \
 @UNITY_BUILD_TRUE@	config.hpp.cfg config.ansi.hpp \
 @UNITY_BUILD_TRUE@	config.msvc.hpp config.mingw.hpp \
 @UNITY_BUILD_TRUE@	config.sun.hpp qldefines.hpp.cfg \
-@UNITY_BUILD_TRUE@	userconfig.hpp version.hpp.cfg
+@UNITY_BUILD_TRUE@	userconfig.hpp
 @UNITY_BUILD_FALSE@libQuantLib_la_SOURCES = $(cpp_files)
 lib_LTLIBRARIES = libQuantLib.la
 libQuantLib_la_LDFLAGS = -version-info 0:0:0

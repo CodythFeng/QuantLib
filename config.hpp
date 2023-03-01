@@ -44,7 +44,7 @@
 #define PACKAGE_NAME "QuantLib"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "QuantLib 1.28"
+#define PACKAGE_STRING "QuantLib 1.29"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "QuantLib"
@@ -53,16 +53,13 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.28"
+#define PACKAGE_VERSION "1.29"
 
 /* Define this if you want to enable the parallel unit test runner. */
 /* #undef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER */
 
 /* Define this if you want to enable sessions. */
 /* #undef QL_ENABLE_SESSIONS */
-
-/* Define this if you want thread-safe singleton initialization. */
-/* #undef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT */
 
 /* Define this if you want to enable thread-safe observer pattern. */
 /* #undef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN */
@@ -111,4 +108,4 @@
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "1.28"
+#define VERSION "1.29"

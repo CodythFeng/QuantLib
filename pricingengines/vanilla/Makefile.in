@@ -123,7 +123,8 @@ am__libVanillaEngines_la_SOURCES_DIST =  \
 	fdhestonvanillaengine.cpp fdcirvanillaengine.cpp \
 	fdsabrvanillaengine.cpp fdsimplebsswingengine.cpp \
 	fdvanillaengine.cpp mcamericanengine.cpp mcdigitalengine.cpp \
-	mchestonhullwhiteengine.cpp
+	mchestonhullwhiteengine.cpp qdfpamericanengine.cpp \
+	qdplusamericanengine.cpp
 am__objects_1 = analyticbsmhullwhiteengine.lo \
 	analyticdigitalamericanengine.lo \
 	analyticdividendeuropeanengine.lo analyticeuropeanengine.lo \
@@ -141,7 +142,8 @@ am__objects_1 = analyticbsmhullwhiteengine.lo \
 	fdcirvanillaengine.lo fdsabrvanillaengine.lo \
 	fdsimplebsswingengine.lo fdvanillaengine.lo \
 	mcamericanengine.lo mcdigitalengine.lo \
-	mchestonhullwhiteengine.lo
+	mchestonhullwhiteengine.lo qdfpamericanengine.lo \
+	qdplusamericanengine.lo
 @UNITY_BUILD_FALSE@am_libVanillaEngines_la_OBJECTS = $(am__objects_1)
 @UNITY_BUILD_TRUE@nodist_libVanillaEngines_la_OBJECTS = unity.lo
 libVanillaEngines_la_OBJECTS = $(am_libVanillaEngines_la_OBJECTS) \
@@ -198,7 +200,9 @@ am__depfiles_remade = ./$(DEPDIR)/analyticbsmhullwhiteengine.Plo \
 	./$(DEPDIR)/juquadraticengine.Plo \
 	./$(DEPDIR)/mcamericanengine.Plo \
 	./$(DEPDIR)/mcdigitalengine.Plo \
-	./$(DEPDIR)/mchestonhullwhiteengine.Plo ./$(DEPDIR)/unity.Plo
+	./$(DEPDIR)/mchestonhullwhiteengine.Plo \
+	./$(DEPDIR)/qdfpamericanengine.Plo \
+	./$(DEPDIR)/qdplusamericanengine.Plo ./$(DEPDIR)/unity.Plo
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -284,8 +288,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOOST_INCLUDE = @BOOST_INCLUDE@
 BOOST_INTERPROCESS_LIB = @BOOST_INTERPROCESS_LIB@
-BOOST_LIB = @BOOST_LIB@
-BOOST_THREAD_LIB = @BOOST_THREAD_LIB@
 BOOST_UNIT_TEST_MAIN_CXXFLAGS = @BOOST_UNIT_TEST_MAIN_CXXFLAGS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -316,6 +318,7 @@ EMACSLOADPATH = @EMACSLOADPATH@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GREP = @GREP@
 HAVE_BOOST_TEST = @HAVE_BOOST_TEST@
 INSTALL = @INSTALL@
@@ -354,6 +357,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PTHREAD_CXXFLAGS = @PTHREAD_CXXFLAGS@
+PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -464,7 +468,9 @@ this_include_HEADERS = \
     mceuropeanhestonengine.hpp \
     mceuropeangjrgarchengine.hpp \
     mchestonhullwhiteengine.hpp \
-    mcvanillaengine.hpp
+    mcvanillaengine.hpp \
+    qdfpamericanengine.hpp \
+    qdplusamericanengine.hpp
 
 cpp_files = \
     analyticbsmhullwhiteengine.cpp \
@@ -500,7 +506,9 @@ cpp_files = \
     fdvanillaengine.cpp \
     mcamericanengine.cpp \
     mcdigitalengine.cpp \
-    mchestonhullwhiteengine.cpp
+    mchestonhullwhiteengine.cpp \
+    qdfpamericanengine.cpp \
+    qdplusamericanengine.cpp
 
 @UNITY_BUILD_TRUE@nodist_libVanillaEngines_la_SOURCES = unity.cpp
 @UNITY_BUILD_TRUE@EXTRA_DIST = $(cpp_files)
@@ -594,6 +602,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcamericanengine.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcdigitalengine.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mchestonhullwhiteengine.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdfpamericanengine.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdplusamericanengine.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unity.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -814,6 +824,8 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/mcamericanengine.Plo
 	-rm -f ./$(DEPDIR)/mcdigitalengine.Plo
 	-rm -f ./$(DEPDIR)/mchestonhullwhiteengine.Plo
+	-rm -f ./$(DEPDIR)/qdfpamericanengine.Plo
+	-rm -f ./$(DEPDIR)/qdplusamericanengine.Plo
 	-rm -f ./$(DEPDIR)/unity.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -894,6 +906,8 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/mcamericanengine.Plo
 	-rm -f ./$(DEPDIR)/mcdigitalengine.Plo
 	-rm -f ./$(DEPDIR)/mchestonhullwhiteengine.Plo
+	-rm -f ./$(DEPDIR)/qdfpamericanengine.Plo
+	-rm -f ./$(DEPDIR)/qdplusamericanengine.Plo
 	-rm -f ./$(DEPDIR)/unity.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
