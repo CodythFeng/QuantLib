@@ -31,4 +31,5 @@
 #include <ql/experimental/exoticoptions/twoassetbarrieroption.hpp>
 #include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
 #include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
-
+#include <ql/experimental/exoticoptions/snowballoption.hpp>
+#include <ql/experimental/exoticoptions/mcsnowballengine.hpp>

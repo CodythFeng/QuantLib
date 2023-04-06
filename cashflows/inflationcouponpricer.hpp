@@ -77,7 +77,7 @@ namespace QuantLib {
                       provide it in your derived class.
                       Deprecated in version 1.29.
       */
-      QL_DEPRECATED Handle<YieldTermStructure> rateCurve_;
+      // QL_DEPRECATED Handle<YieldTermStructure> rateCurve_;
       Date paymentDate_;
     };
 
