@@ -29,6 +29,8 @@
 #include <ql/methods/montecarlo/brownianbridge.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <utility>
+#include <fstream>
+#include <io.h>
 
 namespace QuantLib {
     class StochasticProcess;
@@ -59,11 +61,14 @@ namespace QuantLib {
         //@{
         const sample_type& next() const;
         const sample_type& antithetic() const;
+        const std::vector<Array> storage(Size samples) const;
         Size size() const { return dimension_; }
         const TimeGrid& timeGrid() const { return timeGrid_; }
         //@}
       private:
         const sample_type& next(bool antithetic) const;
+        void writeStorage(std::string address, Size samples) const;
+        std::vector<Array> readStorage(std::string address) const;
         bool brownianBridge_;
         GSG generator_;
         Size dimension_;
@@ -153,7 +158,95 @@ namespace QuantLib {
         return next_;
     }
 
-}
 
+    template <class GSG>
+    const std::vector<Array>
+        PathGenerator<GSG>::storage(Size samples) const {
+        std::string rsgname = generator_.usgName_;
+        std::vector<Array> rsgData;
+        if (rsgname == "class QuantLib::SobolRsg") {
+            std::string storageAddress = "D:/Desktop/C++/quantlib/QuantLib/storage/storagesobol.csv";
+            std::ifstream infile;
+            infile.open(storageAddress, std::ios::in);
+            if (!infile) {
+                writeStorage(storageAddress, samples);
+                rsgData = readStorage(storageAddress);
+            }
+            else {
+                // read data and save as rsgData
+                int iDims = 0; // the counter of dimensions
+                int iSamples = 0; // the counter of samples
+                rsgData = readStorage(storageAddress);
+                iSamples = rsgData.size();
+                iDims = rsgData[0].size();
+                if (iSamples < samples || iDims < dimension_) {
+                    writeStorage(storageAddress, samples);
+                    rsgData = readStorage(storageAddress);
+                }
+            }
+        }
+        else {
+            QL_FAIL("no predestined case for this random sequence generator type");
+        }
+
+        if (brownianBridge_) {
+            QL_FAIL("to be coded");
+        }
+        else {
+            ;
+        }
+        
+        for (Size i = 0; i < samples; i++) {
+            rsgData[i][0] = process_->x0();
+            for (Size j = 1; j < timeGrid_.size(); j++) {
+                Time t = timeGrid_[j - 1];
+                Time dt = timeGrid_.dt(j - 1);
+                rsgData[i][j] = process_->evolve(t, rsgData[i][j-1], dt, rsgData[i][j]);
+            }
+        }
+
+        return rsgData;
+    }
+
+    template <class GSG>
+    typename void PathGenerator<GSG>::writeStorage(std::string address, Size samples) const{
+        // write random sequences
+        typedef typename GSG::sample_type sequence_type;
+        std::ofstream outfile;
+        outfile.open(address, std::ios::out | std::ios::trunc);
+        for (Size i = 1; i <= samples; i++) {
+            const sequence_type& sequence_ = generator_.nextSequence();
+            for (Size j = 0; j < dimension_; j++) {
+                outfile << sequence_.value[j] << ',';
+            }
+            outfile << std::endl;
+        }
+    }
+
+    template <class GSG>
+    typename std::vector<Array> PathGenerator<GSG>::readStorage(std::string address) const{
+        std::ifstream infile;
+        infile.open(address, std::ios::in);
+        std::string strTemp;
+        std::vector<Array> rsgData;
+        while (std::getline(infile, strTemp)) {
+            std::stringstream ssTemp(strTemp);
+            std::string strTemp;
+            char delim = ',';
+            std::vector<Real> vectorTemp;
+            vectorTemp.push_back(0.);
+            while (getline(ssTemp, strTemp, delim)) {
+                vectorTemp.push_back(std::stod(strTemp));
+            }
+            Array arrayTemp(vectorTemp.size());
+            for (int i = 0; i < vectorTemp.size(); i++) {
+                arrayTemp[i] = vectorTemp[i];
+            }
+            rsgData.push_back(arrayTemp);
+        }
+        return rsgData;
+    }
+
+}
 
 #endif

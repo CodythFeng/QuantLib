@@ -75,6 +75,7 @@ namespace QuantLib {
             isControlVariate_ = static_cast<bool>(cvPathPricer_);
         }
         void addSamples(Size samples);
+        void addSamplesByStorage(Size samples);
         const stats_type& sampleAccumulator() const;
       private:
         ext::shared_ptr<path_generator_type> pathGenerator_;
@@ -119,6 +120,29 @@ namespace QuantLib {
 
                 sampleAccumulator_.add((price+price2)/2.0, path.weight);
             } else {
+                sampleAccumulator_.add(price, path.weight);
+            }
+        }
+    }
+
+
+    template <template <class> class MC, class RNG, class S>
+    inline void MonteCarloModel<MC, RNG, S>::addSamplesByStorage(Size samples) {
+        std::vector<Array> totalPath = pathGenerator_->storage(samples);
+        for (Size j = 1; j <= samples; j++) {
+            Path tempPath(pathGenerator_->timeGrid(), totalPath[j - 1]);
+            const sample_type path(tempPath, 1.0);
+            // const sample_type path(Path(pathGenerator_->timeGrid(), totalPath[j - 1]), 1.0);
+            result_type price = (*pathPricer_)(path.value);
+
+            if (isControlVariate_) {
+                QL_FAIL("to be coded");
+            }
+
+            if (isAntitheticVariate_) {
+                QL_FAIL("to be coded");
+            }
+            else {
                 sampleAccumulator_.add(price, path.weight);
             }
         }

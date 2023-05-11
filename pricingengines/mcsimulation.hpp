@@ -57,6 +57,7 @@ namespace QuantLib {
                           Size minSamples = 1023) const;
         //! simulate a fixed number of samples
         result_type valueWithSamples(Size samples) const;
+        result_type valueWithSamplesByStorage(Size samples) const;
         //! error estimated using the samples simulated so far
         result_type errorEstimate() const;
         //! access to the sample accumulator for richer statistics
@@ -64,7 +65,8 @@ namespace QuantLib {
         //! basic calculate method provided to inherited pricing engines
         void calculate(Real requiredTolerance,
                        Size requiredSamples,
-                       Size maxSamples) const;
+                       Size maxSamples,
+                       bool usingStorage = false) const;
       protected:
         McSimulation(bool antitheticVariate,
                      bool controlVariate)
@@ -156,9 +158,26 @@ namespace QuantLib {
 
 
     template <template <class> class MC, class RNG, class S>
+    inline typename McSimulation<MC, RNG, S>::result_type
+        McSimulation<MC, RNG, S>::valueWithSamplesByStorage(Size samples) const {
+
+        Size sampleNumber = mcModel_->sampleAccumulator().samples();
+
+        QL_REQUIRE(samples >= sampleNumber,
+            "number of already simulated samples (" << sampleNumber
+            << ") greater than requested samples (" << samples << ")");
+
+        mcModel_->addSamplesByStorage(samples - sampleNumber);
+
+        return result_type(mcModel_->sampleAccumulator().mean());
+    }
+
+
+    template <template <class> class MC, class RNG, class S>
     inline void McSimulation<MC,RNG,S>::calculate(Real requiredTolerance,
                                                   Size requiredSamples,
-                                                  Size maxSamples) const {
+                                                  Size maxSamples,
+                                                  bool usingStorage) const {
 
         QL_REQUIRE(requiredTolerance != Null<Real>() ||
                    requiredSamples != Null<Size>(),
@@ -201,7 +220,12 @@ namespace QuantLib {
             else
                 this->value(requiredTolerance);
         } else {
-            this->valueWithSamples(requiredSamples);
+            if (!usingStorage) {
+                this->valueWithSamples(requiredSamples);
+            }
+            else {
+                this->valueWithSamplesByStorage(requiredSamples);
+            }
         }
 
     }

@@ -63,6 +63,7 @@ namespace QuantLib {
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return x_; }
         Size dimension() const { return dimension_; }
+        std::string usgName_;
       private:
         USG uniformSequenceGenerator_;
         Size dimension_;
@@ -73,12 +74,12 @@ namespace QuantLib {
     template <class USG, class IC>
     InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(USG usg)
     : uniformSequenceGenerator_(std::move(usg)), dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<Real>(dimension_), 1.0) {}
+      x_(std::vector<Real>(dimension_), 1.0), usgName_(typeid(uniformSequenceGenerator_).name()) {}
 
     template <class USG, class IC>
     InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(USG usg, const IC& inverseCum)
     : uniformSequenceGenerator_(std::move(usg)), dimension_(uniformSequenceGenerator_.dimension()),
-      x_(std::vector<Real>(dimension_), 1.0), ICD_(inverseCum) {}
+      x_(std::vector<Real>(dimension_), 1.0), ICD_(inverseCum), usgName_(typeid(uniformSequenceGenerator_).name()) {}
 
     template <class USG, class IC>
     inline const typename InverseCumulativeRsg<USG, IC>::sample_type&

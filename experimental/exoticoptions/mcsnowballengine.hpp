@@ -24,13 +24,16 @@ namespace QuantLib {
         Real requiredTolerance,
         Size maxSamples,
         bool isBiased,
-        BigNatural seed);
+        BigNatural seed,
+        SobolRsg::DirectionIntegers directionIntegers,
+        bool usingStorage);
     void calculate() const override {
         Real spot = process_->x0();
         QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         McSimulation<SingleVariate, RNG, S>::calculate(requiredTolerance_,
             requiredSamples_,
-            maxSamples_);
+            maxSamples_,
+            usingStorage_);
         results_.value = this->mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
@@ -42,11 +45,21 @@ namespace QuantLib {
         TimeGrid timeGrid() const override;
         ext::shared_ptr<path_generator_type> pathGenerator() const override {
             TimeGrid grid = timeGrid();
-            typename RNG::rsg_type gen =
-                RNG::make_sequence_generator(grid.size() - 1, seed_);
-            return ext::shared_ptr<path_generator_type>(
-                new path_generator_type(process_,
-                    grid, gen, brownianBridge_));
+            std::string name = typeid(RNG).name();
+            //gen = RNG::make_sequence_generator(grid.size() - 1, seed_);
+            if (name == "struct QuantLib::SobolLowDiscrepancy<class QuantLib::InverseCumulativeNormal>") {
+                typename RNG::rsg_type gen = RNG::make_sequence_generator(grid.size() - 1, seed_, directionIntegers_);
+                return ext::shared_ptr<path_generator_type>(
+                    new path_generator_type(process_,
+                        grid, gen, brownianBridge_));
+            }
+            else {
+                typename RNG::rsg_type gen = RNG::make_sequence_generator(grid.size() - 1, seed_);
+                return ext::shared_ptr<path_generator_type>(
+                    new path_generator_type(process_,
+                        grid, gen, brownianBridge_));
+            }
+            
         }
         ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
@@ -56,7 +69,9 @@ namespace QuantLib {
         Real requiredTolerance_;
         bool isBiased_;
         bool brownianBridge_;
+        bool usingStorage_;
         BigNatural seed_;
+        SobolRsg::DirectionIntegers directionIntegers_;
     };
 
 
@@ -75,14 +90,17 @@ namespace QuantLib {
         MakeMCContinuousSnowballEngine& withMaxSamples(Size samples);
         MakeMCContinuousSnowballEngine& withBias(bool b = true);
         MakeMCContinuousSnowballEngine& withSeed(BigNatural seed);
+        MakeMCContinuousSnowballEngine& withDirectionIntegers(SobolRsg::DirectionIntegers directionIntegers);
+        MakeMCContinuousSnowballEngine& withStorage(bool b = true);
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
     private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool brownianBridge_ = false, antithetic_ = false, biased_ = false;
+        bool brownianBridge_ = false, antithetic_ = false, biased_ = false, usingStorage_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
         BigNatural seed_ = 0;
+        SobolRsg::DirectionIntegers directionIntegers_ = SobolRsg::Jaeckel;
     };
 
 
@@ -123,11 +141,13 @@ namespace QuantLib {
         Real requiredTolerance,
         Size maxSamples,
         bool isBiased,
-        BigNatural seed)
+        BigNatural seed,
+        SobolRsg::DirectionIntegers directionIntegers,
+        bool usingStorage)
         : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
         timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
         maxSamples_(maxSamples), requiredTolerance_(requiredTolerance), isBiased_(isBiased),
-        brownianBridge_(brownianBridge), seed_(seed) {
+        brownianBridge_(brownianBridge), seed_(seed), directionIntegers_(directionIntegers), usingStorage_(usingStorage) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
             timeStepsPerYear != Null<Size>(),
             "no time steps provided");
@@ -272,6 +292,20 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
+    inline MakeMCContinuousSnowballEngine<RNG, S>&
+        MakeMCContinuousSnowballEngine<RNG, S>::withDirectionIntegers(SobolRsg::DirectionIntegers directionIntegers) {
+        directionIntegers_ = directionIntegers;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCContinuousSnowballEngine<RNG, S>&
+        MakeMCContinuousSnowballEngine<RNG, S>::withStorage(bool b) {
+        usingStorage_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
     inline
         MakeMCContinuousSnowballEngine<RNG, S>::operator ext::shared_ptr<PricingEngine>()
         const {
@@ -288,7 +322,9 @@ namespace QuantLib {
                 samples_, tolerance_,
                 maxSamples_,
                 biased_,
-                seed_));
+                seed_,
+                directionIntegers_,
+                usingStorage_));
     }
 
 }

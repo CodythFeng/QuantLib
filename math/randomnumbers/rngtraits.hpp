@@ -95,14 +95,36 @@ namespace QuantLib {
         static ext::shared_ptr<IC> icInstance;
     };
 
+
+    template <class IC>
+    struct SobolLowDiscrepancy {
+        // typedefs
+        typedef InverseCumulativeRsg<SobolRsg, IC> rsg_type;
+        // more traits
+        enum { allowsErrorEstimate = 0 };
+        // factory
+        static rsg_type make_sequence_generator(Size dimension,
+            BigNatural seed, SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel) {
+            SobolRsg g(dimension, seed, directionIntegers);
+            return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
+        }
+        // data
+        static ext::shared_ptr<IC> icInstance;
+    };
+
     // static member initialization
     template<class URSG, class IC>
     ext::shared_ptr<IC> GenericLowDiscrepancy<URSG, IC>::icInstance;
+
+    template<class IC>
+    ext::shared_ptr<IC> SobolLowDiscrepancy<IC>::icInstance;
 
 
     //! default traits for low-discrepancy sequence generation
     typedef GenericLowDiscrepancy<SobolRsg,
                                   InverseCumulativeNormal> LowDiscrepancy;
+
+    typedef SobolLowDiscrepancy<InverseCumulativeNormal> Sobol;
 
 }
 
