@@ -128,6 +128,7 @@ namespace QuantLib {
 
     template <template <class> class MC, class RNG, class S>
     inline void MonteCarloModel<MC, RNG, S>::addSamplesByStorage(Size samples) {
+        /*
         std::vector<Array> totalPath = pathGenerator_->storage(samples);
         for (Size j = 1; j <= samples; j++) {
             Path tempPath(pathGenerator_->timeGrid(), totalPath[j - 1]);
@@ -146,6 +147,7 @@ namespace QuantLib {
                 sampleAccumulator_.add(price, path.weight);
             }
         }
+        */
     }
 
     template <template <class> class MC, class RNG, class S>

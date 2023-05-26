@@ -57,6 +57,8 @@ namespace QuantLib {
                            bool brownianBridge = false);
         const sample_type& next() const;
         const sample_type& antithetic() const;
+        const std::vector<Array> storage(Size samples) const;
+        const TimeGrid& timeGrid() const;
       private:
         const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
@@ -97,6 +99,16 @@ namespace QuantLib {
     inline const typename MultiPathGenerator<GSG>::sample_type&
     MultiPathGenerator<GSG>::antithetic() const {
         return next(true);
+    }
+
+    template <class GSG>
+    inline const std::vector<Array> storage(Size samples) {
+        QL_FAIL("NOT CODED");
+    }
+
+    template <class GSG>
+    inline const TimeGrid& timeGrid() {
+        QL_FAIL("NOT CODED");
     }
 
     template <class GSG>
